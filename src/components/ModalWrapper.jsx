@@ -3,7 +3,6 @@ import {
   DialogPanel,
   TransitionChild,
   Transition,
-  TransitionRoot,
 } from "@headlessui/react";
 import { Fragment, useRef } from "react";
 
@@ -11,7 +10,7 @@ const ModalWrapper = ({ open, setOpen, children }) => {
   const cancelButtonRef = useRef(null);
 
   return (
-    <TransitionRoot show={open} as={Fragment}>
+    <Transition show={open} as={Fragment}>
       <Dialog
         as="div"
         className="relative z-10 w-full"
@@ -54,7 +53,7 @@ const ModalWrapper = ({ open, setOpen, children }) => {
           </div>
         </div>
       </Dialog>
-    </TransitionRoot>
+    </Transition>
   );
 };
 
