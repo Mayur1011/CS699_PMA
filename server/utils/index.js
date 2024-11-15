@@ -19,7 +19,8 @@ export const createJWT = (res, userId) => {
   res.cookie("token", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV !== "development",
-    sameSite: "none",
+    // sameSite: "none",
+    sameSite: "strict",
     maxAge: 86400000,
   });
 };
