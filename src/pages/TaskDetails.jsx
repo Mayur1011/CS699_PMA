@@ -19,6 +19,10 @@ import Tabs from "../components/Tabs";
 import { PRIOTITYSTYELS, TASK_TYPE, getInitials } from "../utils";
 import Loading from "../components/Loader";
 import Button from "../components/Button";
+import {
+  useGetSingleTaskQuery,
+  usePostTaskActivityMutation,
+} from "../redux/slices/api/taskApiSlice";
 
 const assets = [
   "https://images.pexels.com/photos/2418664/pexels-photo-2418664.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
@@ -70,7 +74,7 @@ const TASKTYPEICON = {
       <MdOutlineDoneAll size={24} />
     </div>
   ),
-  "in progress": (
+  inprogress: (
     <div className="w-8 h-8 flex items-center justify-center rounded-full bg-violet-600 text-white">
       <GrInProgress size={16} />
     </div>
@@ -90,7 +94,15 @@ const TaskDetails = () => {
   const { id } = useParams();
 
   const [selected, setSelected] = useState(0);
-  const task = tasks[3];
+  const { data, isLoading, refetch } = useGetSingleTaskQuery(id);
+  const task = data?.task;
+  if (isLoading) {
+    return (
+      <div className="py-10">
+        <Loading />
+      </div>
+    );
+  }
 
   return (
     <div className="w-full flex flex-col gap-3 mb-4 overflow-y-hidden">
@@ -130,12 +142,12 @@ const TaskDetails = () => {
                 </p>
 
                 <div className="flex items-center gap-8 p-4 border-y border-gray-200">
-                  <div className="space-x-2">
+                  {/* <div className="space-x-2">
                     <span className="font-semibold">Assets :</span>
                     <span>{task?.assets?.length}</span>
                   </div>
 
-                  <span className="text-gray-400">|</span>
+                  <span className="text-gray-400">|</span> */}
 
                   <div className="space-x-2">
                     <span className="font-semibold">Sub-Task :</span>
@@ -202,7 +214,7 @@ const TaskDetails = () => {
                 </div>
               </div>
               {/* RIGHT */}
-              <div className="w-full md:w-1/2 space-y-8">
+              {/* <div className="w-full md:w-1/2 space-y-8">
                 <p className="text-lg font-semibold">ASSETS</p>
 
                 <div className="w-full grid grid-cols-2 gap-4">
@@ -215,12 +227,16 @@ const TaskDetails = () => {
                     />
                   ))}
                 </div>
-              </div>
+              </div> */}
             </div>
           </>
         ) : (
           <>
-            <Activities activity={task?.activities} id={id} />
+            <Activities
+              activity={data?.task?.activities}
+              id={id}
+              refetch={refetch}
+            />
           </>
         )}
       </Tabs>
@@ -228,12 +244,29 @@ const TaskDetails = () => {
   );
 };
 
-const Activities = ({ activity, id }) => {
+const Activities = ({ activity, id, refetch }) => {
   const [selected, setSelected] = useState(act_types[0]);
   const [text, setText] = useState("");
-  const isLoading = false;
+  const [postActivity, { isLoading }] = usePostTaskActivityMutation();
 
-  const handleSubmit = async () => {};
+  const handleSubmit = async () => {
+    try {
+      const result = await postActivity({
+        id,
+        data: {
+          type: selected?.toLowerCase(),
+          activity: text,
+        },
+      }).unwrap();
+      setText("");
+
+      toast.success(result?.message);
+
+      refetch();
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
+  };
 
   const Card = ({ item }) => {
     return (

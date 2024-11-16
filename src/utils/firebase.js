@@ -13,9 +13,9 @@ const firebaseConfig = {
   storageBucket: "projectmanagement-a50c0.firebasestorage.app",
   messagingSenderId: "495281155332",
   appId: "1:495281155332:web:9f169efd3edbd4707d3451",
-  measurementId: "G-8S9XN1CBHN"
+  measurementId: "G-8S9XN1CBHN",
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+export const app = initializeApp(firebaseConfig);
 // const analytics = getAnalytics(app);

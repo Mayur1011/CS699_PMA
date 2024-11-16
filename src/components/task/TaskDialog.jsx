@@ -6,9 +6,14 @@ import { HiDuplicate } from "react-icons/hi";
 import { MdAdd, MdOutlineEdit } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { Menu, Transition } from "@headlessui/react";
+import { toast } from "sonner";
 import AddTask from "./AddTask";
 import AddSubTask from "./AddSubTask";
 import ConfirmatioDialog from "../Dialogs";
+import {
+  useDuplicateTaskMutation,
+  useTrashTaskMutation,
+} from "../../redux/slices/api/taskApiSlice";
 
 const TaskDialog = ({ task }) => {
   const [open, setOpen] = useState(false);
@@ -16,10 +21,42 @@ const TaskDialog = ({ task }) => {
   const [openDialog, setOpenDialog] = useState(false);
 
   const navigate = useNavigate();
+  const [deleteTask] = useTrashTaskMutation();
+  const [duplicateTask] = useDuplicateTaskMutation();
 
-  const duplicateHandler = () => {};
-  const deleteClicks = () => {};
-  const deleteHandler = () => {};
+  const deleteHandler = async () => {
+    try {
+      const res = await deleteTask({
+        id: task._id,
+        isTrashed: "trash",
+      }).unwrap();
+      toast.success(res?.message);
+      setTimeout(() => {
+        setOpenDialog(false);
+        window.location.reload();
+      }, 500);
+    } catch (err) {
+      console.log(err);
+      toast.error(err?.data?.message || err.error);
+    }
+  };
+  const deleteClicks = () => {
+    setOpenDialog(true);
+  };
+
+  const duplicateHandler = async () => {
+    try {
+      const res = await duplicateTask(task._id).unwrap();
+      toast.success(res?.message);
+      setTimeout(() => {
+        setOpenDialog(false);
+        window.location.reload();
+      }, 500);
+    } catch (err) {
+      console.log(err);
+      toast.error(err?.data?.message || err.error);
+    }
+  };
 
   const items = [
     {
@@ -40,7 +77,7 @@ const TaskDialog = ({ task }) => {
     {
       label: "Duplicate",
       icon: <HiDuplicate className="mr-2 h-5 w-5" aria-hidden="true" />,
-      onClick: () => duplicateHanlder(),
+      onClick: () => duplicateHandler(),
     },
   ];
 

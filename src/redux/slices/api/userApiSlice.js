@@ -12,6 +12,15 @@ export const userApiSlice = apiSlice.injectEndpoints({
       }),
     }),
 
+    changePassword: builder.mutation({
+      query: (data) => ({
+        url: `${USER_URL}/change-password`,
+        method: "PUT",
+        body: data,
+        credentials: "include",
+      }),
+    }),
+
     getTeamList: builder.query({
       query: () => ({
         url: `${USER_URL}/get-team`,
@@ -36,12 +45,51 @@ export const userApiSlice = apiSlice.injectEndpoints({
         credentials: "include",
       }),
     }),
+
+    getNotifications: builder.query({
+      query: () => ({
+        url: `${USER_URL}/notifications`,
+        method: "GET",
+        credentials: "include",
+      }),
+    }),
+
+    // markNotificationRead: builder.mutation({
+    //   query: (data) => ({
+    //     // url: `${USER_URL}/read-noti?isReadType=${data.type}&id=${data?.id}`,
+    //     url: `${USER_URL}/read-noti?isReadType=${data.type}${
+    //       data.id ? `&id=${data.id}` : ""
+    //     }`,
+    //     method: "PUT",
+    //     body: data,
+    //     credentials: "include",
+    //   }),
+    // }),
+
+    // CHATGPT FIXED CODE
+    markNotificationRead: builder.mutation({
+      query: (data) => {
+        const queryString =
+          data.type === "all"
+            ? `isReadType=all`
+            : `isReadType=${data.type}&id=${data.id}`;
+        return {
+          url: `${USER_URL}/read-noti?${queryString}`,
+          method: "PUT",
+          body: data,
+          credentials: "include",
+        };
+      },
+    }),
   }),
 });
 
 export const {
   useUpdateUserMutation,
+  useChangePasswordMutation,
   useGetTeamListQuery,
   useDeleteUserMutation,
   useUserActionMutation,
+  useGetNotificationsQuery,
+  useMarkNotificationReadMutation,
 } = userApiSlice;

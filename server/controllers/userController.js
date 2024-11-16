@@ -147,29 +147,84 @@ export const updateUserProfile = async (req, res) => {
   }
 };
 
+// export const markNotificationRead = async (req, res) => {
+//   try {
+//     const { userId } = req.user;
+
+//     // const { isReadType, id } = req.query;
+//     const { isReadType, id } = req.body;
+
+//     if (isReadType === "all") {
+//       await Notification.updateMany(
+//         { team: userId, isRead: { $nin: [userId] } },
+//         { $push: { isRead: userId } },
+//         { new: true }
+//       );
+//     } else {
+//       await Notification.findOneAndUpdate(
+//         { _id: id, isRead: { $nin: [userId] } },
+//         { $push: { isRead: userId } },
+//         { new: true }
+//       );
+//     }
+
+//     res.status(201).json({ status: true, message: "Done" });
+//   } catch (error) {
+//     console.log(error);
+//     return res.status(400).json({ status: false, message: error.message });
+//   }
+// };
+
+// CHATGPT FIXED CODE
+import { ObjectId } from "mongoose";
+
 export const markNotificationRead = async (req, res) => {
   try {
-    const { userId } = req.user;
+    const { userId } = req.user; // Assuming `userId` is extracted from JWT or session
+    const { isReadType, id } = req.query; // Read query parameters
 
-    const { isReadType, id } = req.query;
-
+    // Check if 'isReadType' is 'all' (no 'id' should be provided)
     if (isReadType === "all") {
+      // Validate that no 'id' is included
+      if (id) {
+        return res.status(400).json({
+          status: false,
+          message:
+            "ID should not be provided when marking all notifications as read",
+        });
+      }
+
+      // Mark all notifications as read for the user
       await Notification.updateMany(
-        { team: userId, isRead: { $nin: [userId] } },
-        { $push: { isRead: userId } },
-        { new: true }
+        { team: userId, isRead: { $nin: [userId] } }, // Notifications that haven't been read by the user yet
+        { $push: { isRead: userId } } // Add the userId to the 'isRead' array
       );
-    } else {
-      await Notification.findOneAndUpdate(
-        { _id: id, isRead: { $nin: [userId] } },
-        { $push: { isRead: userId } },
-        { new: true }
-      );
+
+      return res
+        .status(200)
+        .json({ status: true, message: "All notifications marked as read" });
     }
 
-    res.status(201).json({ status: true, message: "Done" });
+    // If 'isReadType' is not 'all', we expect an 'id' to be provided
+    if (!id || !ObjectId.isValid(id)) {
+      return res.status(400).json({
+        status: false,
+        message: "A valid notification ID is required",
+      });
+    }
+
+    // Mark a specific notification as read
+    await Notification.findOneAndUpdate(
+      { _id: id, isRead: { $nin: [userId] } },
+      { $push: { isRead: userId } },
+      { new: true }
+    );
+
+    return res
+      .status(200)
+      .json({ status: true, message: "Notification marked as read" });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res.status(400).json({ status: false, message: error.message });
   }
 };

@@ -153,7 +153,7 @@ export const dashboardStatistics = async (req, res) => {
       .sort({ _id: -1 });
 
     //   group task by stage and calculate counts
-    const groupTaskks = allTasks.reduce((result, task) => {
+    const groupTasks = allTasks.reduce((result, task) => {
       const stage = task.stage;
 
       if (!result[stage]) {
@@ -183,7 +183,7 @@ export const dashboardStatistics = async (req, res) => {
       totalTasks,
       last10Task,
       users: isAdmin ? users : [],
-      tasks: groupTaskks,
+      tasks: groupTasks,
       graphData: groupData,
     };
 
@@ -256,6 +256,7 @@ export const createSubTask = async (req, res) => {
     const { title, tag, date } = req.body;
 
     const { id } = req.params;
+    console.log("id", id);
 
     const newSubTask = {
       title,
@@ -282,6 +283,7 @@ export const updateTask = async (req, res) => {
   try {
     const { id } = req.params;
     const { title, date, team, stage, priority, assets } = req.body;
+    console.log("updateTask", id);
 
     const task = await Task.findById(id);
 
@@ -296,7 +298,7 @@ export const updateTask = async (req, res) => {
 
     res
       .status(200)
-      .json({ status: true, message: "Task duplicated successfully." });
+      .json({ status: true, message: "Task updated successfully." });
   } catch (error) {
     console.log(error);
     return res.status(400).json({ status: false, message: error.message });
@@ -315,7 +317,7 @@ export const trashTask = async (req, res) => {
 
     res.status(200).json({
       status: true,
-      message: `Task trashed successfully.`,
+      message: `Task deleted successfully.`,
     });
   } catch (error) {
     console.log(error);

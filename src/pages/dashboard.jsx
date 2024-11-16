@@ -1,19 +1,21 @@
-import React from "react";
+import clsx from "clsx";
+import moment from "moment";
+import { FaNewspaper } from "react-icons/fa";
+import { FaArrowsToDot } from "react-icons/fa6";
+import { LuClipboardEdit } from "react-icons/lu";
 import {
   MdAdminPanelSettings,
   MdKeyboardArrowDown,
   MdKeyboardArrowUp,
   MdKeyboardDoubleArrowUp,
 } from "react-icons/md";
-import { LuClipboardEdit } from "react-icons/lu";
-import { FaNewspaper, FaUsers } from "react-icons/fa";
-import { FaArrowsToDot } from "react-icons/fa6";
-import moment from "moment";
-import { summary } from "../assets/data";
-import clsx from "clsx";
 import { Chart } from "../components/Chart";
 import { BGS, PRIOTITYSTYELS, TASK_TYPE, getInitials } from "../utils";
+
 import UserInfo from "../components/UserInfo";
+import Loading from "./../components/Loader";
+
+import { useGetDashboardStatsQuery } from "../redux/slices/api/taskApiSlice";
 
 const TaskTable = ({ tasks }) => {
   const ICONS = {
@@ -146,13 +148,21 @@ const UserTable = ({ users }) => {
   );
 };
 const Dashboard = () => {
-  const totals = summary.tasks;
+  const { data, isLoading } = useGetDashboardStatsQuery();
+  if (isLoading) {
+    return (
+      <div className="py-10">
+        <Loading />
+      </div>
+    );
+  }
+  const totals = data?.tasks;
 
   const stats = [
     {
       _id: "1",
       label: "TOTAL TASK",
-      total: summary?.totalTasks || 0,
+      total: data?.totalTasks || 0,
       icon: <FaNewspaper />,
       bg: "bg-[#1d4ed8]",
     },
@@ -199,6 +209,7 @@ const Dashboard = () => {
       </div>
     );
   };
+
   return (
     <div className="h-full py-4">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
@@ -211,17 +222,17 @@ const Dashboard = () => {
         <h4 className="text-xl text-gray-600 font-semibold">
           Chart by Priority
         </h4>
-        <Chart />
+        <Chart data={data?.graphData} />
       </div>
 
       <div className="w-full flex flex-col md:flex-row gap-4 2xl:gap-10 py-8">
         {/* /left */}
 
-        <TaskTable tasks={summary.last10Task} />
+        <TaskTable tasks={data.last10Task} />
 
         {/* /right */}
 
-        <UserTable users={summary.users} />
+        <UserTable users={data.users} />
       </div>
     </div>
   );

@@ -30,7 +30,7 @@ const AddUser = ({ open, setOpen, userData }) => {
     try {
       if (userData) {
         const result = await updateUser(data).unwrap();
-        toast.success(result?.message);
+        toast.success("Profile updated successfully");
         if (userData?._id === user._id) {
           dispatch(setCredentials({ ...result.user }));
         }
@@ -43,7 +43,7 @@ const AddUser = ({ open, setOpen, userData }) => {
       }
       setTimeout(() => {
         setOpen(false);
-      }, 1500);
+      }, 100);
     } catch (error) {
       toast.error("Something went wrong");
     }

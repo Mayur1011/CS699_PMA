@@ -6,13 +6,13 @@ const taskSchema = new mongoose.Schema(
     date: { type: Date, default: new Date() },
     priority: {
       type: String,
-      default: "normal",
-      enum: ["high", "medium", "normal", "low"],
+      default: "medium",
+      enum: ["high", "medium", "low"],
     },
     stage: {
       type: String,
       default: "todo",
-      enum: ["todo", "in progress", "completed"],
+      enum: ["todo", "inprogress", "completed"],
     },
     activities: [
       {
@@ -22,7 +22,7 @@ const taskSchema = new mongoose.Schema(
           enum: [
             "assigned",
             "started",
-            "in progress",
+            "inprogress",
             "bug",
             "completed",
             "commented",
