@@ -1,19 +1,18 @@
 import clsx from "clsx";
-import React, { useState } from "react";
+import { useState } from "react";
+import { BiMessageAltDetail } from "react-icons/bi";
+import { FaList } from "react-icons/fa";
+import { IoMdAdd } from "react-icons/io";
 import {
-  MdAttachFile,
   MdKeyboardArrowDown,
   MdKeyboardArrowUp,
   MdKeyboardDoubleArrowUp,
 } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { BGS, PRIOTITYSTYELS, TASK_TYPE, formatDate } from "../utils";
-import TaskDialog from "./task/TaskDialog";
-import { BiMessageAltDetail } from "react-icons/bi";
-import { FaList } from "react-icons/fa";
-import UserInfo from "./UserInfo";
-import { IoMdAdd } from "react-icons/io";
 import AddSubTask from "./task/AddSubTask";
+import TaskDialog from "./task/TaskDialog";
+import UserInfo from "./UserInfo";
 
 const ICONS = {
   high: <MdKeyboardDoubleArrowUp />,
@@ -62,12 +61,8 @@ const TaskCard = ({ task }) => {
               <span>{task?.activities?.length}</span>
             </div>
             <div className="flex gap-1 items-center text-sm text-gray-600 ">
-              <MdAttachFile />
-              <span>{task?.assets?.length}</span>
-            </div>
-            <div className="flex gap-1 items-center text-sm text-gray-600 ">
               <FaList />
-              <span>0/{task?.subTasks?.length}</span>
+              <span>{task?.subTasks?.length}</span>
             </div>
           </div>
 

@@ -1,6 +1,8 @@
 import User from "../models/user.js";
 import Notification from "../models/notification.js";
 import { createJWT } from "../utils/index.js";
+import mongoose from "mongoose";
+import { ObjectId } from "mongoose";
 
 export const registerUser = async (req, res) => {
   try {
@@ -24,6 +26,7 @@ export const registerUser = async (req, res) => {
     if (user) {
       isAdmin ? createJWT(res, user._id) : null;
       user.password = undefined;
+      console.log(user);
       res.status(201).json(user);
     } else {
       return res.status(400).json({ status: false, message: "User not found" });
@@ -176,7 +179,6 @@ export const updateUserProfile = async (req, res) => {
 // };
 
 // CHATGPT FIXED CODE
-import { ObjectId } from "mongoose";
 
 export const markNotificationRead = async (req, res) => {
   try {
@@ -206,7 +208,7 @@ export const markNotificationRead = async (req, res) => {
     }
 
     // If 'isReadType' is not 'all', we expect an 'id' to be provided
-    if (!id || !ObjectId.isValid(id)) {
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({
         status: false,
         message: "A valid notification ID is required",

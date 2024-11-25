@@ -103,12 +103,8 @@ const Table = ({ tasks }) => {
             <span>{task?.activities?.length}</span>
           </div>
           <div className="flex gap-1 items-center text-sm text-gray-600 dark:text-gray-400">
-            <MdAttachFile />
-            <span>{task?.assets?.length}</span>
-          </div>
-          <div className="flex gap-1 items-center text-sm text-gray-600 dark:text-gray-400">
             <FaList />
-            <span>0/{task?.subTasks?.length}</span>
+            <span>{task?.subTasks?.length}</span>
           </div>
         </div>
       </td>

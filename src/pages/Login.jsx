@@ -1,18 +1,21 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import Textbox from "../components/Textbox";
+import { toast } from "sonner";
+
 import Button from "../components/Button";
 import Loading from "../components/Loader";
-import { useSelector, useDispatch } from "react-redux";
+import Textbox from "../components/Textbox";
+
 import { useLoginMutation } from "../redux/slices/api/authApiSlice";
-import { toast } from "sonner";
 import { setCredentials } from "../redux/slices/authSlice";
 
 const Login = () => {
   const { user } = useSelector((state) => state.auth);
+
   console.log("user from Login.jsx", user);
-  // const user = "";
+
   const {
     register,
     handleSubmit,
@@ -26,7 +29,9 @@ const Login = () => {
   const submitHandler = async (data) => {
     try {
       const result = await login(data).unwrap();
+
       console.log("submit", result);
+
       dispatch(setCredentials(result));
       navigate("/");
     } catch (error) {
@@ -49,13 +54,9 @@ const Login = () => {
               Manage all your task in one place!
             </span>
             <p className="flex flex-col gap-0 md:gap-4 text-4xl md:text-6xl 2xl:text-7xl font-black text-center text-purple-700">
-              <span>Cloud-Based</span>
               <span>Project Manager</span>
             </p>
 
-            {/* <div className="cell">
-              <div className="circle rotate-in-up-left"></div>
-            </div> */}
             <div className="juggling-container">
               <div className="ball"></div>
               <div className="ball"></div>
@@ -75,7 +76,7 @@ const Login = () => {
                 Welcome back!
               </p>
               <p className="text-center text-base text-gray-700 ">
-                Keep all your credential safge.
+                Keep all your credential safe.
               </p>
             </div>
 

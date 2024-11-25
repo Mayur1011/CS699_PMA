@@ -149,6 +149,9 @@ const UserTable = ({ users }) => {
 };
 const Dashboard = () => {
   const { data, isLoading } = useGetDashboardStatsQuery();
+
+  // console.log("data", data);
+
   if (isLoading) {
     return (
       <div className="py-10">
@@ -195,7 +198,6 @@ const Dashboard = () => {
         <div className="h-full flex flex-1 flex-col justify-between">
           <p className="text-base text-gray-600">{label}</p>
           <span className="text-2xl font-semibold">{count}</span>
-          <span className="text-sm text-gray-400">{"110 last month"}</span>
         </div>
 
         <div
@@ -227,11 +229,8 @@ const Dashboard = () => {
 
       <div className="w-full flex flex-col md:flex-row gap-4 2xl:gap-10 py-8">
         {/* /left */}
-
         <TaskTable tasks={data.last10Task} />
-
         {/* /right */}
-
         <UserTable users={data.users} />
       </div>
     </div>
